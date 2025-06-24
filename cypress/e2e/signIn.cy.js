@@ -1,29 +1,32 @@
 /// <reference types="cypress" />
 
 describe('Sign In page', () => {
+  const username = 'tomsmith';
+  const password = 'SuperSecretPassword!';
+
   beforeEach(() => {
     cy.visit('/login');
   });
 
   it('should login with valid credentials', () => {
-    cy.login('tomsmith', 'SuperSecretPassword!');
-    cy.contains('#flash', 'You logged into a secure area!').should('exist');
+    cy.login(username, password);
+    cy.checkMessage('You logged into a secure area!');
   });
 
   it('should show the error for an invalid username', () => {
-    cy.login('tomsmith2', 'SuperSecretPassword!');
-    cy.contains('#flash', 'Your username is invalid!').should('exist');
+    cy.login(`${username}2`, password);
+    cy.checkMessage('Your username is invalid!');
   });
 
   it('should show the error for an invalid password', () => {
-    cy.login('tomsmith', 'SuperBadPassword!');
-    cy.contains('#flash', 'Your password is invalid!').should('exist');
+    cy.login(username, `${password}2`);
+    cy.checkMessage('Your password is invalid!');
   });
 
   it('should logout', () => {
-    cy.login('tomsmith', 'SuperSecretPassword!');
+    cy.login(username, password);
 
-    cy.get('.button').click();
-    cy.contains('#flash', 'You logged out of the secure area!').should('exist');
+    cy.get('a.button').click();
+    cy.checkMessage('You logged out of the secure area!');
   });
 });
